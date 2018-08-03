@@ -1,0 +1,196 @@
+You can use the third argument to test fn, isn't this working for you?
+
+test('example', async () => {  await new Promise(resolve => setTimeout(resolve, 1000));}, 500);
+
+
+const puppeteer = require('puppeteer');
+
+let browser;
+let page;
+
+describe('fazenda', () => {
+
+    beforeEach(async() => {
+        browser = await puppeteer.launch({ headless: false });
+        page = await browser.newPage();
+        await page.goto('http://localhost:4200/');
+    })
+
+    afterEach(() => {
+        //browser.close();
+    });
+    /*
+        test('cadastrar-com-sucesso', async() => {
+            await page.screenshot({ path: 'tela-inicial.png', fullPage: true });
+            await page.click('body > app-root > app-nav > mat-toolbar > mat-toolbar-row > a');
+
+            await page.waitFor('#btn_add');
+            await page.click('#btn_add');
+
+            await page.type("input[name='nome']", 'Fazenda nome Cadastro');
+            await page.click("input[name='nome_reduzido']");
+            await page.type("input[name='nome_reduzido']", 'Faz reduzido');
+            await page.type("input[name='cidade']", 'Cidade da Fazenda');
+            await page.type("input[name='estado']", 'MG');
+            await page.type("textarea[name='descricao']", 'Descrição da Fazenda');
+
+            await page.click('#btn_salvar');
+
+            //verificar ser foi salvo
+            await page.type("input[name='pesquisa']", 'Fazenda nome Cadastro');
+            await page.waitFor('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted');
+
+            const achou = await page.$eval('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted',
+                (element) => {
+                    return element.innerHTML
+                })
+            expect(achou).toBe(" Fazenda nome Cadastro ");
+
+            await page.click("button[class='excluir mat-icon-button']");
+            await page.click("#btn_confirmar");
+
+        })*/
+
+    test('editar-com-sucesso', async() => {
+        await page.screenshot({ path: 'tela-inicial.png', fullPage: true });
+        await page.click('body > app-root > app-nav > mat-toolbar > mat-toolbar-row > a');
+
+        await page.waitFor('#btn_add');
+        await page.click('#btn_add');
+
+        await page.type("input[name='nome']", 'Fazenda Nome Editar');
+        await page.click("input[name='nome_reduzido']");
+        await page.type("input[name='nome_reduzido']", 'Fz reduz editar');
+        await page.type("input[name='cidade']", 'Cidade da Fazenda Editar');
+        await page.type("input[name='estado']", 'AA');
+        await page.type("textarea[name='descricao']", 'Descrição da Fazenda editar');
+
+
+        await page.click('#btn_salvar');
+
+        //verificar ser foi salvo
+        await page.type("input[name='pesquisa']", 'Fazenda Nome Editar');
+        await page.waitFor('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted');
+
+        const achou = await page.$eval('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted',
+            (element) => {
+                return element.innerHTML
+            })
+        await expect(achou).toBe(" Fazenda Nome Editar ");
+
+        //Editar a fazenda        
+        await page.click("button[mattooltip='Editar']");
+        //============================================================================================
+        //===== sequencia para limpar os nomes
+        await page.click("input[name='nome']");
+        await page.keyboard.press('End');
+
+        const nomeFazenda = await page.$eval("input[name='nome']", el => el.value);
+        for (let i = 0; i < nomeFazenda.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        //===== sequencia para limpar os nomes
+        await page.click("input[name='nome_reduzido']");
+        await page.keyboard.press('End');
+
+        const nome_reduzido = await page.$eval("input[name='nome_reduzido']", el => el.value);
+        for (let i = 0; i < nome_reduzido.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        //===== sequencia para limpar os nomes
+        await page.click("textarea[name='descricao']");
+        await page.keyboard.press('End');
+
+        const descricao = await page.$eval("textarea[name='descricao']", el => el.value);
+        for (let i = 0; i < descricao.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        //===== sequencia para limpar os nomes
+        await page.click("input[name='cidade']");
+        await page.keyboard.press('End');
+
+        const cidade = await page.$eval("input[name='cidade']", el => el.value);
+        for (let i = 0; i < cidade.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        //===== sequencia para limpar os nomes
+        await page.click("input[name='estado']");
+        await page.keyboard.press('End');
+
+        const estado = await page.$eval("input[name='estado']", el => el.value);
+        for (let i = 0; i < estado.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        //============================================================================================
+
+
+        await page.type("input[name='nome']", 'Fazenda Nome Editado');
+        await page.click("input[name='nome_reduzido']");
+        await page.type("input[name='nome_reduzido']", 'Fz editado');
+        await page.type("input[name='cidade']", 'Cidade da Fazenda Editado');
+        await page.type("input[name='estado']", 'BB');
+        await page.type("textarea[name='descricao']", 'Descrição da Fazenda editado');
+
+        await page.click('#btn_salvar');
+        //=====================================================================================================================
+        //=====================================================================================================================
+        //===============================================TEm que parar aqui======================================================================
+
+
+        await page.waitFor(3000);
+        browser.close();
+        //=====================================================================================================================
+        //=====================================================================================================================
+
+
+        await page.waitFor('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted');
+        //verificar se foi alterado
+        //===== sequencia para limpar os nomes
+        await page.click("input[name='pesquisa']");
+        await page.keyboard.press('End');
+
+        const pesquisa = await page.$eval("input[name='pesquisa']", el => el.value);
+        for (let i = 0; i < pesquisa.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        await page.click("input[name='pesquisa']");
+        await page.keyboard.press('End');
+
+        const pesquisa2 = await page.$eval("input[name='pesquisa']", el => el.value);
+        for (let i = 0; i < pesquisa2.length; i++) {
+            await page.keyboard.press('Backspace');
+        }
+        //===== Fim da sequencia para limpar os nomes
+        //verificar ser foi salvo
+        await page.type("input[name='pesquisa']", 'Fazenda Nome Editado');
+
+        await page.waitFor('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted');
+
+        const achou2 = await page.$eval('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted',
+            (element) => {
+                return element.innerHTML
+            })
+        await console.log("resultado");
+        await console.log(achou2);
+        await expect(achou2).toBe(" Fazenda Nome Editado ");
+
+        await page.click("button[class='excluir mat-icon-button']");
+        await page.click("#btn_confirmar");
+
+    })
+
+    function delay(time) {
+        return new Promise(function(resolve) {
+            setTimeout(resolve, time)
+        });
+    }
+
+
+
+})
