@@ -1,7 +1,8 @@
 import faker from "faker";
 import puppeteer from "puppeteer";
 import Fazenda_cadastro from '../Pages/fazenda_cadastro_page.js';
-import Fazenda_cadastro from '../Pages/fazenda_lista_page.js';
+import Fazenda_lista from '../Pages/fazenda_lista_page.js';
+import Home_Page from '../Pages/home_page.js';
 
 const APP = "localhost:4200";
 
@@ -27,11 +28,13 @@ afterAll(() => {
 
 
 test('cadastrar-com-sucesso', async() => {
-    await page.screenshot({ path: 'tela-inicial.png', fullPage: true });
-    await page.click('body > app-root > app-nav > mat-toolbar > mat-toolbar-row > a');
+    // await page.screenshot({ path: 'tela-inicial.png', fullPage: true });
+    //await page.click('body > app-root > app-nav > mat-toolbar > mat-toolbar-row > a');
+    await page.click(Home_Page.btn_Fazenda);
 
-    await page.waitFor('#btn_add');
-    await page.click('#btn_add');
+    // await page.waitFor('#btn_add');
+    await page.waitFor(Fazenda_lista.btn_add);
+    await page.click(Fazenda_lista.btn_add);
 
     await page.type(Fazenda_cadastro.nome, 'Fazenda nome Cadastro');
     await page.click(Fazenda_cadastro.nomeReduzido);
@@ -43,16 +46,19 @@ test('cadastrar-com-sucesso', async() => {
     await page.click(Fazenda_cadastro.btn_salvar);
 
     //verificar ser foi salvo
-    await page.type("input[name='pesquisa']", 'Fazenda nome Cadastro');
-    await page.waitFor('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted');
-
-    const achou = await page.$eval('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted',
+    //await page.type("input[name='pesquisa']", 'Fazenda nome Cadastro');
+    await page.type(Fazenda_lista.txt_pesquisa, 'Fazenda nome Cadastro');
+    // await page.waitFor('body > app-root > app-lista-fazendas > div > div.container-tabela > mat-table > mat-row > mat-cell.mat-cell.cdk-column-nome.mat-column-nome.ng-star-inserted');
+    await page.waitFor(Fazenda_lista.campo_nome);
+    const achou = await page.$eval(Fazenda_lista.campo_nome,
         (element) => {
             return element.innerHTML
         })
     expect(achou).toBe(" Fazenda nome Cadastro ");
 
-    await page.click("button[class='excluir mat-icon-button']");
-    await page.click("#btn_confirmar");
+    //await page.click("button[class='excluir mat-icon-button']");
+    await page.click(Fazenda_lista.btn_excluir);
+    //await page.click("#btn_confirmar");
+    await page.click(Fazenda_lista.btn_Alert_confirma)
 
 }), 20000;
