@@ -56,6 +56,7 @@ test('cadastrar-com-sucesso', async() => {
 
 
 test('editar-com-sucesso', async() => {
+    jest.setTimeout(30000);
     await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Fazenda_lista.btn_add);
     await page.click(Fazenda_lista.btn_add);
