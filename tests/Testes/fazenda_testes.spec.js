@@ -1,6 +1,7 @@
 import faker from "faker";
 import puppeteer from "puppeteer";
-import Fazenda_cadastro from './Pages/fazenda_cadastro_page';
+import Fazenda_cadastro from '../Pages/fazenda_cadastro_page.js';
+import Fazenda_cadastro from '../Pages/fazenda_lista_page.js';
 
 const APP = "localhost:4200";
 
@@ -54,4 +55,4 @@ test('cadastrar-com-sucesso', async() => {
     await page.click("button[class='excluir mat-icon-button']");
     await page.click("#btn_confirmar");
 
-}), 16000;
+}), 20000;
