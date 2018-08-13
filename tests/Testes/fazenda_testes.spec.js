@@ -11,7 +11,7 @@ let browser;
 const width = 1360;
 const height = 768;
 
-beforeAll(async() => {
+beforeEach(async() => {
     browser = await puppeteer.launch({
         headless: false,
         //slowMo: 80,
@@ -24,10 +24,18 @@ beforeAll(async() => {
 });
 afterAll(() => {
     browser.close();
+    //page.close();
 });
 
-/*
+afterEach(() => {
+    // browser.close();
+    page.close();
+});
+
 test('cadastrar-com-sucesso', async() => {
+    // await page.goto('http://localhost:4200/');
+
+    jest.setTimeout(30000);
     await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Fazenda_lista.btn_add);
     await page.click(Fazenda_lista.btn_add);
@@ -48,14 +56,17 @@ test('cadastrar-com-sucesso', async() => {
             return element.innerHTML
         })
     expect(achou).toBe(" Fazenda nome Cadastro ");
-
+    await delay(1000);
     await page.click(Fazenda_lista.btn_excluir);
+    await delay(1000);
     await page.click(Fazenda_lista.btn_Alert_confirma)
+    await delay(1000);
 
-}), 20000;*/
+}), 20000;
 
 
 test('editar-com-sucesso', async() => {
+    // await page.goto('http://localhost:4200/');
     jest.setTimeout(30000);
     await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Fazenda_lista.btn_add);
@@ -98,9 +109,9 @@ test('editar-com-sucesso', async() => {
     await page.type(Fazenda_cadastro.estado, 'BB');
     await page.click(Fazenda_cadastro.btn_salvar);
 
-    /*await page.waitFor(Home_Page.btn_home);
-    await page.click(Home_Page.btn_home);
-    await page.click(Home_Page.btn_Fazenda);*/
+    //await page.waitFor(Home_Page.btn_home);
+    //await page.click(Home_Page.btn_home);
+    //await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Home_Page.btn_home);
     await page.click(Home_Page.btn_home);
     await page.waitFor(Home_Page.btn_home);
@@ -117,7 +128,60 @@ test('editar-com-sucesso', async() => {
         })
     expect(achou2).toBe(" Fazenda Editada ");
 
+    await delay(1000);
+    await page.click(Fazenda_lista.btn_excluir);
+    await delay(1000);
+    await page.click(Fazenda_lista.btn_Alert_confirma)
+    await delay(1000);
+
 }), 20000;
+
+test('excluir-com-sucesso', async() => {
+
+    jest.setTimeout(30000);
+    await page.click(Home_Page.btn_Fazenda);
+    await page.waitFor(Fazenda_lista.btn_add);
+    await page.click(Fazenda_lista.btn_add);
+
+    await page.type(Fazenda_cadastro.nome, 'Fazenda Excluir');
+    await page.click(Fazenda_cadastro.nomeReduzido);
+    await page.type(Fazenda_cadastro.nomeReduzido, 'Faz Excluir');
+    await page.type(Fazenda_cadastro.descricao, 'Descrição Excluir');
+    await page.type(Fazenda_cadastro.cidade, 'Cidade Excluir');
+    await page.type(Fazenda_cadastro.estado, 'EX');
+    await page.click(Fazenda_cadastro.btn_salvar);
+
+    //verificar ser foi salvo
+    await page.type(Fazenda_lista.txt_pesquisa, 'Fazenda Excluir');
+    await page.waitFor(Fazenda_lista.campo_nome);
+    const achou = await page.$eval(Fazenda_lista.campo_nome,
+        (element) => {
+            return element.innerHTML
+        })
+    expect(achou).toBe(" Fazenda Excluir ");
+    //sequencia excluir
+    await delay(1000);
+    await page.click(Fazenda_lista.btn_excluir);
+    await delay(1000);
+    await page.click(Fazenda_lista.btn_Alert_confirma)
+    await delay(1000);
+
+
+    await page.waitFor(Home_Page.btn_home);
+    await page.click(Home_Page.btn_Fazenda);
+
+    /*await Base_Teste.limparCampo(Home_Page.txt_pesquisa, page);
+    await page.waitFor(Fazenda_lista.txt_pesquisa);
+    await page.type(Fazenda_lista.txt_pesquisa, 'Fazenda Editada');
+    await page.waitFor(Fazenda_lista.campo_nome);
+    const achou2 = await page.$eval(Fazenda_lista.campo_nome,
+        (element) => {
+            return element.innerHTML
+        })
+    expect(achou2).toBe(" Fazenda Editada ");
+*/
+}), 20000;
+
 
 function delay(time) {
     return new Promise(function(resolve) {
