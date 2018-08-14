@@ -20,6 +20,7 @@ beforeEach(async() => {
     page = await browser.newPage();
     await page.setViewport({ width, height });
     await page.goto('http://localhost:4200/');
+    //await page.waitForNavigation();
 
 });
 afterAll(() => {
@@ -56,17 +57,17 @@ test('cadastrar-com-sucesso', async() => {
             return element.innerHTML
         })
     expect(achou).toBe(" Fazenda nome Cadastro ");
-    await delay(1000);
+    //await espera(1000);
+    await page.waitFor(Fazenda_lista.btn_excluir);
     await page.click(Fazenda_lista.btn_excluir);
-    await delay(1000);
-    await page.click(Fazenda_lista.btn_Alert_confirma)
-    await delay(1000);
+    await page.waitFor(Fazenda_lista.btn_Alert_confirma);
+    await page.click(Fazenda_lista.btn_Alert_confirma);
+    await espera(1000);
 
 }), 20000;
 
 
 test('editar-com-sucesso', async() => {
-    // await page.goto('http://localhost:4200/');
     jest.setTimeout(30000);
     await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Fazenda_lista.btn_add);
@@ -89,7 +90,6 @@ test('editar-com-sucesso', async() => {
         })
     expect(achou).toBe(" Fazenda Não Editada ");
 
-    //sequencia para editar fazenda
     //limpar campos
     await page.waitFor(Fazenda_lista.btn_editar);
     await page.click(Fazenda_lista.btn_editar);
@@ -128,11 +128,11 @@ test('editar-com-sucesso', async() => {
         })
     expect(achou2).toBe(" Fazenda Editada ");
 
-    await delay(1000);
+    await page.waitFor(Fazenda_lista.btn_excluir);
     await page.click(Fazenda_lista.btn_excluir);
-    await delay(1000);
-    await page.click(Fazenda_lista.btn_Alert_confirma)
-    await delay(1000);
+    await page.waitFor(Fazenda_lista.btn_Alert_confirma);
+    await page.click(Fazenda_lista.btn_Alert_confirma);
+    await espera(1000);
 
 }), 20000;
 
@@ -160,30 +160,16 @@ test('excluir-com-sucesso', async() => {
         })
     expect(achou).toBe(" Fazenda Excluir ");
     //sequencia excluir
-    await delay(1000);
+    await page.waitFor(Fazenda_lista.btn_excluir);
     await page.click(Fazenda_lista.btn_excluir);
-    await delay(1000);
-    await page.click(Fazenda_lista.btn_Alert_confirma)
-    await delay(1000);
+    await page.waitFor(Fazenda_lista.btn_Alert_confirma);
+    await page.click(Fazenda_lista.btn_Alert_confirma);
+    await espera(1000);
 
-
-    await page.waitFor(Home_Page.btn_home);
-    await page.click(Home_Page.btn_Fazenda);
-
-    /*await Base_Teste.limparCampo(Home_Page.txt_pesquisa, page);
-    await page.waitFor(Fazenda_lista.txt_pesquisa);
-    await page.type(Fazenda_lista.txt_pesquisa, 'Fazenda Editada');
-    await page.waitFor(Fazenda_lista.campo_nome);
-    const achou2 = await page.$eval(Fazenda_lista.campo_nome,
-        (element) => {
-            return element.innerHTML
-        })
-    expect(achou2).toBe(" Fazenda Editada ");
-*/
 }), 20000;
 
 
-function delay(time) {
+function espera(time) {
     return new Promise(function(resolve) {
         setTimeout(resolve, time)
     });
