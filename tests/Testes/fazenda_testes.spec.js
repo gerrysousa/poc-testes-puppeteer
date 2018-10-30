@@ -11,7 +11,7 @@ let browser;
 const width = 1360;
 const height = 768;
 
-beforeAll(async() => {
+beforeEach(async() => {
     browser = await puppeteer.launch({
         headless: false,
         //slowMo: 80,
@@ -20,14 +20,23 @@ beforeAll(async() => {
     page = await browser.newPage();
     await page.setViewport({ width, height });
     await page.goto('http://localhost:4200/');
+    //await page.waitForNavigation();
 
 });
 afterAll(() => {
     browser.close();
+    //page.close();
 });
 
-/*
+afterEach(() => {
+    // browser.close();
+    page.close();
+});
+
 test('cadastrar-com-sucesso', async() => {
+    // await page.goto('http://localhost:4200/');
+
+    jest.setTimeout(30000);
     await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Fazenda_lista.btn_add);
     await page.click(Fazenda_lista.btn_add);
@@ -48,14 +57,18 @@ test('cadastrar-com-sucesso', async() => {
             return element.innerHTML
         })
     expect(achou).toBe(" Fazenda nome Cadastro ");
-
+    //await espera(1000);
+    await page.waitFor(Fazenda_lista.btn_excluir);
     await page.click(Fazenda_lista.btn_excluir);
-    await page.click(Fazenda_lista.btn_Alert_confirma)
+    await page.waitFor(Fazenda_lista.btn_Alert_confirma);
+    await page.click(Fazenda_lista.btn_Alert_confirma);
+    await espera(1000);
 
-}), 20000;*/
+}), 20000;
 
 
 test('editar-com-sucesso', async() => {
+    jest.setTimeout(30000);
     await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Fazenda_lista.btn_add);
     await page.click(Fazenda_lista.btn_add);
@@ -77,7 +90,6 @@ test('editar-com-sucesso', async() => {
         })
     expect(achou).toBe(" Fazenda Não Editada ");
 
-    //sequencia para editar fazenda
     //limpar campos
     await page.waitFor(Fazenda_lista.btn_editar);
     await page.click(Fazenda_lista.btn_editar);
@@ -97,9 +109,9 @@ test('editar-com-sucesso', async() => {
     await page.type(Fazenda_cadastro.estado, 'BB');
     await page.click(Fazenda_cadastro.btn_salvar);
 
-    /*await page.waitFor(Home_Page.btn_home);
-    await page.click(Home_Page.btn_home);
-    await page.click(Home_Page.btn_Fazenda);*/
+    //await page.waitFor(Home_Page.btn_home);
+    //await page.click(Home_Page.btn_home);
+    //await page.click(Home_Page.btn_Fazenda);
     await page.waitFor(Home_Page.btn_home);
     await page.click(Home_Page.btn_home);
     await page.waitFor(Home_Page.btn_home);
@@ -116,9 +128,48 @@ test('editar-com-sucesso', async() => {
         })
     expect(achou2).toBe(" Fazenda Editada ");
 
+    await page.waitFor(Fazenda_lista.btn_excluir);
+    await page.click(Fazenda_lista.btn_excluir);
+    await page.waitFor(Fazenda_lista.btn_Alert_confirma);
+    await page.click(Fazenda_lista.btn_Alert_confirma);
+    await espera(1000);
+
 }), 20000;
 
-function delay(time) {
+test('excluir-com-sucesso', async() => {
+
+    jest.setTimeout(30000);
+    await page.click(Home_Page.btn_Fazenda);
+    await page.waitFor(Fazenda_lista.btn_add);
+    await page.click(Fazenda_lista.btn_add);
+
+    await page.type(Fazenda_cadastro.nome, 'Fazenda Excluir');
+    await page.click(Fazenda_cadastro.nomeReduzido);
+    await page.type(Fazenda_cadastro.nomeReduzido, 'Faz Excluir');
+    await page.type(Fazenda_cadastro.descricao, 'Descrição Excluir');
+    await page.type(Fazenda_cadastro.cidade, 'Cidade Excluir');
+    await page.type(Fazenda_cadastro.estado, 'EX');
+    await page.click(Fazenda_cadastro.btn_salvar);
+
+    //verificar ser foi salvo
+    await page.type(Fazenda_lista.txt_pesquisa, 'Fazenda Excluir');
+    await page.waitFor(Fazenda_lista.campo_nome);
+    const achou = await page.$eval(Fazenda_lista.campo_nome,
+        (element) => {
+            return element.innerHTML
+        })
+    expect(achou).toBe(" Fazenda Excluir ");
+    //sequencia excluir
+    await page.waitFor(Fazenda_lista.btn_excluir);
+    await page.click(Fazenda_lista.btn_excluir);
+    await page.waitFor(Fazenda_lista.btn_Alert_confirma);
+    await page.click(Fazenda_lista.btn_Alert_confirma);
+    await espera(1000);
+
+}), 20000;
+
+
+function espera(time) {
     return new Promise(function(resolve) {
         setTimeout(resolve, time)
     });
